@@ -1,0 +1,13 @@
+---
+version: '2'
+
+services:
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:latest
+    volumes:
+      - ./app/queries/queries.sql:/opt/queries/queries.sql
+    environment:
+      KSQL_BOOTSTRAP_SERVERS: ${KSQL_BOOTSTRAP_SERVERS}
+      KSQL_KSQL_SERVICE_ID: ${KSQL_KSQL_SERVICE_ID}
+      KSQL_KSQL_QUERIES_FILE: /opt/queries/queries.sql
+    restart: unless-stopped
