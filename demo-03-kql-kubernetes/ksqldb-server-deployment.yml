@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: ksqldb-server
+  name: ksqldb-server
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      io.kompose.service: ksqldb-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        io.kompose.service: ksqldb-server
+    spec:
+      containers:
+      - env:
+        - name: KSQL_BOOTSTRAP_SERVERS
+          value: 192.168.1.8:39092
+        - name: KSQL_KSQL_QUERIES_FILE
+          value: /opt/queries/queries.sql
+        - name: KSQL_KSQL_SERVICE_ID
+          value: demo_03_
+        image: confluentinc/ksqldb-server:latest
+        imagePullPolicy: ""
+        name: ksqldb-server
+        resources: {}
+        volumeMounts:
+        - mountPath: /opt/queries/queries.sql
+          name: ksqldb-server-claim
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: ksqldb-server-claim
+        persistentVolumeClaim:
+          claimName: ksqldb-server-claim
+status: {}
